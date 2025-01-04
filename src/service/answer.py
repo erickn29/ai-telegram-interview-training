@@ -48,7 +48,7 @@ class AnswerServiceV1:
         if not response:
             return
         assessment, score = response
-        if score == 1:
+        if score <= 1:
             return assessment
         async with self.session.begin():
             answer_repo = AnswerRepository(session=self.session)

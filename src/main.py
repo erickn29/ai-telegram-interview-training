@@ -5,14 +5,14 @@ import sys
 from aiogram import Dispatcher
 
 from bot import bot
-from handler.auth import router as auth_router
-from handler.get_answer import router as get_answer_router
-from handler.go_back import router as go_back_router
-from handler.run_training import router as run_training_router
-from handler.select_stack import router as select_stack_router
-from handler.send_question import router as send_question_router
-from handler.start import router as start_router
-from handler.start_training import router as start_training_router
+from handler.commands.auth import router as auth_router
+from handler.messages.get_answer import router as get_answer_router
+from handler.commands.go_back import router as go_back_router
+from handler.commands.run_training import router as run_training_router
+from handler.callbacks.select_stack import router as select_stack_router
+from handler.commands.send_question import router as send_question_router
+from handler.commands.start import router as start_router
+from handler.commands.start_training import router as start_training_router
 
 
 async def main():
