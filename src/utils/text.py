@@ -1,0 +1,22 @@
+def normalize_to_markdown(text: str) -> str:
+    text = (
+        text.replace("_", r"\_")
+        .replace("*", r"\*")
+        .replace("[", r"\[")
+        .replace("]", r"\]")
+        .replace("(", r"\(")
+        .replace(")", r"\)")
+        .replace("~", r"\~")
+        .replace("`", r"\`")
+        .replace(">", r"\>")
+        .replace("#", r"\#")
+        .replace("+", r"\+")
+        .replace("-", r"\-")
+        .replace("=", r"\=")
+        .replace("|", r"\|")
+        .replace("{", r"\{")
+        .replace("}", r"\}")
+        .replace(".", r"\.")
+        .replace("!", r"\!")
+    )
+    return text
