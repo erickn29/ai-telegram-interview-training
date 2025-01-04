@@ -1,5 +1,5 @@
 from aiogram import F, Router
-from aiogram.exceptions import AiogramError
+from aiogram.exceptions import AiogramError, TelegramBadRequest
 from aiogram.types import Message
 
 from core.cache import cache
@@ -18,6 +18,7 @@ async def get_answer(message: Message):
     if not last_question_id:
         await message.answer("Вопрос не найден\. Выберите стек и начните тренировку\.")
         return
+    processing = await message.answer("Обрабатываю ответ\.\.\.")
     answer_service = AnswerServiceV1()
     assessment = await answer_service.process_answer(
         int(last_question_id), message.from_user.id, message.text
@@ -26,8 +27,9 @@ async def get_answer(message: Message):
         await message.answer("Что-то пошло не так, попробуйте позже")
         return
     try:
+        await processing.delete()
         await message.answer(assessment.text, reply_markup=get_question_kb())
-    except AiogramError as e:
+    except (AiogramError, TelegramBadRequest) as e:
         await create_error(text=str(e))
         await message.answer("Что-то пошло не так, попробуйте позже")
         return

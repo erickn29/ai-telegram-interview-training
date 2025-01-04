@@ -78,9 +78,8 @@ class AIAssessmentServiceV1:
     @staticmethod
     def _normalize_text_to_markdown(text: str) -> str:
         text = (
-            text
-            # .replace('_', r'\_')
-            # .replace('*', r'\*')
+            text.replace("_", r"\_")
+            .replace("*", r"\*")
             .replace("[", r"\[")
             .replace("]", r"\]")
             .replace("(", r"\(")
