@@ -15,6 +15,7 @@ from service.answer import AnswerServiceV1
 from utils.speech_to_text import speech_to_text
 from utils.text import normalize_to_markdown
 
+
 router = Router()
 
 
@@ -80,11 +81,7 @@ async def get_voice_answer(message: Message):
         return
     try:
         await processing.delete()
-        await message.answer(
-            normalize_to_markdown(
-                f"Вот, что я распознал:\n'{text}'"
-            )
-        )
+        await message.answer(normalize_to_markdown(f"Вот, что я распознал:\n'{text}'"))
         await message.answer(assessment.text, reply_markup=get_question_kb())
     except (AiogramError, TelegramBadRequest) as e:
         await create_error(text=str(e))
