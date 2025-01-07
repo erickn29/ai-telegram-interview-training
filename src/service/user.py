@@ -1,9 +1,12 @@
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import config
+from core.database import db_conn
 from model.user import User
+from repository.question import QuestionRepository
 from repository.user import UserRepository
 from service.base import BaseService
 
@@ -88,3 +91,32 @@ class UserService(BaseService):
     def get_password_hash(password) -> str:
         """Хэширует пароль пользователя, нужно для регистрации или смены пароля"""
         return PWD_CONTEXT.hash(config.app.secret_key + password)
+
+
+class UserServiceV1:
+    def __init__(self):
+        self.session = db_conn.session_factory()
+
+    @staticmethod
+    async def get_user_subscription(user: User) -> str:
+        if user.subscription and user.subscription >= datetime.now():
+            return f"Подписка активна до {user.subscription.strftime('%d.%m.%Y')}"
+        return "Подписка не активна"
+
+    async def get_user_answers(self, user: User) -> str | None:
+        if not user.answers:
+            return
+        question_ids = [answer.question_id for answer in user.answers]
+        async with self.session.begin():
+            question_repo = QuestionRepository(session=self.session)
+            questions = await question_repo.filter(id={"in": question_ids})
+
+    async def get_user_data(self, user_tg_id: int) -> str | None:
+        async with self.session.begin():
+            user_repo = UserRepository(session=self.session)
+            user = await user_repo.find(tg_id=user_tg_id, select_in_load=[User.answers])
+            if not user:
+                return
+
+        user_subscription = await self.get_user_subscription(user)
+        user_answers = await self.get_user_answers(user)
