@@ -18,6 +18,8 @@ passlib = "^1.7.4"
 pyjwt = "^2.10.1"
 sqlalchemy-utils = "^0.41.2"
 psycopg2-binary = "^2.9.10"
+speechrecognition = "^3.13.0"
+pydub = "0.25.1"
 
 [tool.poetry.group.test.dependencies]
 fakeredis = "2.26.2"

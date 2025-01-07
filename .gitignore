@@ -110,3 +110,8 @@ firebase.json
 
 # serts
 firebase.json
+
+*.ogg
+*.mp3
+*.wav
+*.flac
