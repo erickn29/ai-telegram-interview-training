@@ -19,8 +19,12 @@ class QuestionTechnology(Base):
     )
 
     question = relationship(
-        "Question", back_populates="question_technologies", uselist=False
+        "Question",
+        back_populates="question_technologies",
+        uselist=False,
     )
     technology = relationship(
-        "Technology", back_populates="question_technologies", uselist=False
+        "Technology",
+        back_populates="question_technologies",
+        uselist=False,
     )

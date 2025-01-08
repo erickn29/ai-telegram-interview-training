@@ -52,18 +52,3 @@ class QuestionRepository(BaseRepository):
         result = await self.session.scalars(query)
         questions = result.all()
         return questions
-
-    async def get_answers_stats(self, user_id: int) -> dict:
-        """
-        select t.name technology_name, avg(average)::numeric(3,1) average_score
-        from (
-            select q.id question_id, t.name, max(a.score) average from answer a
-            join user u on a.user_id = 14
-            join question q on a.question_id = q.id
-            join question_technology qt on qt.question_id = q.id
-            join technology t on t.id = qt.technology_id
-            group by q.id, t.name
-        ) t
-        group by t.name
-        """
-        pass

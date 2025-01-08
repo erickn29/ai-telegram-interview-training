@@ -1,12 +1,12 @@
 from datetime import datetime
 from uuid import UUID
 
+from sqlalchemy import RowMapping, Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import config
 from core.database import db_conn
 from model.user import User
-from repository.question import QuestionRepository
 from repository.user import UserRepository
 from service.base import BaseService
 
@@ -103,13 +103,25 @@ class UserServiceV1:
             return f"Подписка активна до {user.subscription.strftime('%d.%m.%Y')}"
         return "Подписка не активна"
 
-    async def get_user_answers(self, user: User) -> str | None:
-        if not user.answers:
-            return
-        question_ids = [answer.question_id for answer in user.answers]
-        async with self.session.begin():
-            question_repo = QuestionRepository(session=self.session)
-            questions = await question_repo.filter(id={"in": question_ids})
+    @staticmethod
+    def _combine_user_info(
+        user: User, user_stats: Sequence[RowMapping], user_subscription: str
+    ) -> str:
+        user_str = f"ID: {user.tg_id}\n"
+        user_str += f"Пользователь: {user.tg_username}\n"
+        user_str += f"Имя: {user.first_name}\n"
+        user_str += f"Фамилия: {user.last_name}\n\n"
+
+        technology_str = ""
+        for technology in user_stats:
+            technology_str += (
+                f"{technology.get('technology_name')}"
+                f" - {technology.get('user_score')} баллов из "
+                f"{technology.get('max_score')} возможных\n"
+            )
+        technology_str += "\n"
+        subscription_str = f"{user_subscription}\n"
+        return user_str + technology_str + subscription_str
 
     async def get_user_data(self, user_tg_id: int) -> str | None:
         async with self.session.begin():
@@ -117,6 +129,11 @@ class UserServiceV1:
             user = await user_repo.find(tg_id=user_tg_id, select_in_load=[User.answers])
             if not user:
                 return
+            user_stats = await user_repo.get_stats_by_technology(user.id)
 
         user_subscription = await self.get_user_subscription(user)
-        user_answers = await self.get_user_answers(user)
+        return self._combine_user_info(
+            user=user,
+            user_stats=user_stats,
+            user_subscription=user_subscription,
+        )
