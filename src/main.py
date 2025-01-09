@@ -13,6 +13,7 @@ from handler.commands.run_training import router as run_training_router
 from handler.commands.send_question import router as send_question_router
 from handler.commands.start import router as start_router
 from handler.commands.start_training import router as start_training_router
+from handler.commands.stats import router as stats_router
 from handler.messages.get_answer import router as get_answer_router
 
 
@@ -27,6 +28,7 @@ async def main():
         auth_router,
         run_training_router,
         profile_router,
+        stats_router,
         get_answer_router,
     )
     await dp.start_polling(bot)

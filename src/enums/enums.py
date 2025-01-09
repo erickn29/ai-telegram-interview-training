@@ -4,6 +4,7 @@ from enum import Enum
 class CommandEnum(Enum):
     start = "start"
     auth = "auth"
+    stats = "stats"
     get_question = "Ешё вопрос ➡"
     go_back = "⏮ Главное меню"
     me = "👤 Мой профиль"
@@ -20,7 +21,7 @@ class CommandEnum(Enum):
             # f"*{CommandEnum.start_interview.value}* \- мок собеседование с \~20 вопросами по выбранному стеку\. Фидбек в конце собеседования \n\n"  # noqa: E501
             f"*{CommandEnum.start_training.value}* \- бесконечная тренировка с выбранным стеком \n\n"  # noqa: E501
             f"*{CommandEnum.me.value}* \- перейти в свой профиль \n\n"
-            f"*{CommandEnum.leaders.value}* \- посмотреть лидеров \n\n"
+            # f"*{CommandEnum.leaders.value}* \- посмотреть лидеров \n\n"
         )
 
 

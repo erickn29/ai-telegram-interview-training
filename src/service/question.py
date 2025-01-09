@@ -40,8 +40,9 @@ class QuestionServiceV1:
                 questions = await question_repo.get_questions(technologies=stack_list)
 
         question = random.choice(questions) if questions else None
-        await self._save_user_question(user, question)
-        await self._add_last_question_to_cache(user_tg_id, question.id)
+        if question:
+            await self._save_user_question(user, question)
+            await self._add_last_question_to_cache(user_tg_id, question.id)
         return question
 
     @staticmethod
