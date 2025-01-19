@@ -1,8 +1,7 @@
 from sqlalchemy import Sequence, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from model import QuestionTechnology, Technology, UserQuestion
-from model.question import Question
+from model import Question, QuestionTechnology, Technology, UserQuestion
 from repository.base import BaseRepository
 
 

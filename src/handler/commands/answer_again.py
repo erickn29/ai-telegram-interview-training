@@ -12,12 +12,12 @@ from utils.text import normalize_to_markdown
 router = Router()
 
 
-@router.message(F.text == CommandEnum.get_question.value)
+@router.message(F.text == CommandEnum.answer_again.value)
 async def send_question_training(message: Message):
     question_service = QuestionServiceV1()
-    question = await question_service.get_question_for_training(message.from_user.id)
+    question = await question_service.get_last_question_from_cache(message.from_user.id)
     if not question:
-        return await message.answer("Нет вопросов для тренировки")
+        return await message.answer("Вы еще не получили вопрос")
     try:
         await message.answer(
             normalize_to_markdown(question.text), reply_markup=get_question_kb()

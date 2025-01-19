@@ -2,6 +2,10 @@ from sqlalchemy import Boolean, SmallInteger, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from model.base import Base
+from model.question_technology import QuestionTechnologyTable
+
+
+# from model import QuestionTechnology
 
 
 class Question(Base):
@@ -21,3 +25,8 @@ class Question(Base):
         "QuestionTechnology", back_populates="question"
     )
     user_questions = relationship("UserQuestion", back_populates="question")
+    technologies = relationship(
+        "Technology",
+        secondary=QuestionTechnologyTable,
+        # back_populates="questions"
+    )

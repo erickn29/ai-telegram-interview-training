@@ -32,14 +32,14 @@ async def get_text_answer(message: Message):
         int(last_question_id), message.from_user.id, message.text
     )
     if not assessment:
-        await message.answer("Что-то пошло не так, попробуйте позже")
+        await message.answer("Что\-то пошло не так, попробуйте ")
         return
     try:
         await processing.delete()
         await message.answer(assessment.text, reply_markup=get_question_kb())
     except (AiogramError, TelegramBadRequest) as e:
         await create_error(text=str(e))
-        await message.answer("Что-то пошло не так, попробуйте позже")
+        await message.answer("Что\-то пошло не так, попробуйте ")
         return
 
 
@@ -77,7 +77,7 @@ async def get_voice_answer(message: Message):
         int(last_question_id), message.from_user.id, text
     )
     if not assessment:
-        await message.answer("Что-то пошло не так, попробуйте позже")
+        await message.answer("Что\-то пошло не так, попробуйте ")
         return
     try:
         await processing.delete()
@@ -85,5 +85,5 @@ async def get_voice_answer(message: Message):
         await message.answer(assessment.text, reply_markup=get_question_kb())
     except (AiogramError, TelegramBadRequest) as e:
         await create_error(text=str(e))
-        await message.answer("Что-то пошло не так, попробуйте позже")
+        await message.answer("Что\-то пошло не так, попробуйте ")
         return

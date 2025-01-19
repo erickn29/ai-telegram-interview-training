@@ -70,3 +70,15 @@ class QuestionServiceV1:
         key = f"tg_user_id:{user_tg_id}:last_question"
         ttl = 60 * 60 * 24 * 7 * 55
         await cache.set(key, question_id, ttl)
+
+    @staticmethod
+    async def get_last_question_from_cache(user_tg_id: int) -> Question | None:
+        key = f"tg_user_id:{user_tg_id}:last_question"
+        last_question_id = await cache.get(key)
+        if not last_question_id:
+            return None
+        session = db_conn.session_factory()
+        async with session.begin():
+            question_repo = QuestionRepository(session=session)
+            question = await question_repo.find(id=int(last_question_id))
+            return question

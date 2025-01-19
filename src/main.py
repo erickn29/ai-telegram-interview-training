@@ -6,8 +6,10 @@ from aiogram import Dispatcher
 
 from bot import bot
 from handler.callbacks.select_stack import router as select_stack_router
+from handler.commands.answer_again import router as answer_again_router
 from handler.commands.auth import router as auth_router
 from handler.commands.go_back import router as go_back_router
+from handler.commands.llm_answer import router as llm_answer_router
 from handler.commands.profile import router as profile_router
 from handler.commands.run_training import router as run_training_router
 from handler.commands.send_question import router as send_question_router
@@ -29,6 +31,8 @@ async def main():
         run_training_router,
         profile_router,
         stats_router,
+        answer_again_router,
+        llm_answer_router,
         get_answer_router,
     )
     await dp.start_polling(bot)

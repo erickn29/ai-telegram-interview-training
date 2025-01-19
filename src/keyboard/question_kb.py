@@ -6,6 +6,8 @@ from enums.enums import CommandEnum
 
 def get_question_kb() -> ReplyKeyboardMarkup:
     kb = ReplyKeyboardBuilder()
+    kb.button(text=CommandEnum.llm_answer.value)
+    kb.button(text=CommandEnum.answer_again.value)
     kb.button(text=CommandEnum.go_back.value)
     kb.button(text=CommandEnum.get_question.value)
     kb.adjust(2)

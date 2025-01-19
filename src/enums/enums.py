@@ -6,6 +6,8 @@ class CommandEnum(Enum):
     auth = "auth"
     stats = "stats"
     get_question = "Ешё вопрос ➡"
+    answer_again = "🔄 Повторить вопрос"
+    llm_answer = "🤖 Помощь бота"
     go_back = "⏮ Главное меню"
     me = "👤 Мой профиль"
     select_stack = "✅ Выбор стека"

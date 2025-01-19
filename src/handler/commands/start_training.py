@@ -16,9 +16,9 @@ async def start_training(message: Message):
         types.InlineKeyboardButton(
             text=StackEnum.sql.value, callback_data=StackEnum.sql.value
         ),
-        # types.InlineKeyboardButton(
-        #     text=StackEnum.git.value, callback_data=StackEnum.git.value
-        # ),
+        types.InlineKeyboardButton(
+            text=StackEnum.git.value, callback_data=StackEnum.git.value
+        ),
         # types.InlineKeyboardButton(
         #     text=StackEnum.linux.value, callback_data=StackEnum.linux.value
         # ),

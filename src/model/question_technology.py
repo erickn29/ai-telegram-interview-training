@@ -1,4 +1,4 @@
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import Column, ForeignKey, Integer, Table, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from model.base import Base
@@ -28,3 +28,22 @@ class QuestionTechnology(Base):
         back_populates="question_technologies",
         uselist=False,
     )
+
+
+QuestionTechnologyTable = Table(
+    "question_technology",
+    Base.metadata,
+    Column(
+        "question_id",
+        Integer,
+        ForeignKey("question.id", ondelete="CASCADE"),
+        nullable=False,
+    ),
+    Column(
+        "technology_id",
+        Integer,
+        ForeignKey("technology.id", ondelete="CASCADE"),
+        nullable=False,
+    ),
+    extend_existing=True,
+)

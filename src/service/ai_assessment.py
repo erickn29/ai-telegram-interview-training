@@ -6,10 +6,14 @@ from utils import request
 
 
 class AIAssessmentServiceV1:
-    default_text = "Что-то пошло не так, попробуйте позже"
+    default_text = "Что\-то пошло не так, попробуйте "
 
     def __init__(
-        self, question: Question, answer: Answer, user: User, technologies: list[str]
+        self,
+        question: Question,
+        answer: Answer = None,
+        user: User = None,
+        technologies: list[str] = None,
     ):
         self.question = question
         self.answer = answer
@@ -25,6 +29,7 @@ class AIAssessmentServiceV1:
         В ответе давай оценку ответу пользователя на вопрос. 
         Если ответ поверхностный и расплывчатый, он не должен оцениваться выше 3.
         Говори что верно и что неверно сказано. Что можно добавить к ответу на вопрос.
+        Оценивай ответ в контексте вопроса по {', '.join(self.technologies)}.
         Формат ответа:
         - оценка от 1 до 10 (например 5/10), 1 - очень плохой ответ, 10 - отличный ответ
         - что сказано верно
@@ -32,10 +37,21 @@ class AIAssessmentServiceV1:
         - рекомендации
         """
 
+    def _get_system_prompt_for_help(self) -> str:
+        return """
+        Ты - опытный разработчик. 
+        Дай подробный ответ на вопрос.
+        """
+
     def _get_user_answer(self) -> str:
         return f"""
         Вопрос: {self.question.text}.
         Ответ: {self.answer.text}.
+        """
+
+    def _get_help(self) -> str:
+        return f"""
+        Вопрос: {self.question.text}.
         """
 
     async def _get_model_response(self) -> dict | None:
@@ -45,6 +61,21 @@ class AIAssessmentServiceV1:
                 "messages": [
                     {"role": "system", "content": self._get_system_prompt()},
                     {"role": "user", "content": self._get_user_answer()},
+                ],
+                "temperature": 0.7,
+                "max_tokens": -1,
+                "stream": False,
+            },
+        )
+        return response
+
+    async def _get_model_response_for_help(self) -> dict | None:
+        response = await request.get_evaluation_request(
+            url=config.ai.SERVICE_URL,
+            data={
+                "messages": [
+                    {"role": "system", "content": self._get_system_prompt_for_help()},
+                    {"role": "user", "content": self._get_help()},
                 ],
                 "temperature": 0.7,
                 "max_tokens": -1,
@@ -111,3 +142,14 @@ class AIAssessmentServiceV1:
         assessment = await self.create_ai_assessment(text)
         score = self._get_score(text)
         return assessment, score
+
+    async def get_ai_help(self) -> str | None:
+        response = await self._get_model_response_for_help()
+        if not response:
+            return
+        try:
+            text = response["choices"][0]["message"]["content"].strip()
+            text = self._normalize_text_to_markdown(text)
+        except (KeyError, IndexError, SyntaxError):
+            return
+        return text
